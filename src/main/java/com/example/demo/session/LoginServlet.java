@@ -17,22 +17,35 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         // Это название 2-х параметров, которые мы передаем
-        String user = request.getParameter("user");
-        String pwd = request.getParameter("pwd");
-        // Это значение наших параметров
-        String userID = "admin";
-        String password = "password";
-
-        if (userID.equals(user) && password.equals(pwd)) {
+        String login = request.getParameter("login");
+        String password = request.getParameter("password");
+        LoginStructure.InitMap();
+        LoginStructure.InitList();
+//        if (LoginStructure.checkInList(login, password)) {
+//            HttpSession session = request.getSession();
+//            session.setAttribute("user", "user");
+//            //setting session to expiry in 30 mins
+//            session.setMaxInactiveInterval(30 * 60);
+//            Cookie userName = new Cookie("user", login);
+//            userName.setMaxAge(30 * 60);
+//            response.addCookie(userName);
+//            PrintWriter out = response.getWriter();
+//            out.println("Welcome back to the team, " + login + "!");
+//        } else {
+//            PrintWriter out = response.getWriter();
+//            out.println("Either user name or password is wrong!");
+//        }
+//    }
+        if (LoginStructure.checkInMap(login, password)) {
             HttpSession session = request.getSession();
             session.setAttribute("user", "user");
             //setting session to expiry in 30 mins
             session.setMaxInactiveInterval(30 * 60);
-            Cookie userName = new Cookie("user", user);
+            Cookie userName = new Cookie("user", login);
             userName.setMaxAge(30 * 60);
             response.addCookie(userName);
             PrintWriter out = response.getWriter();
-            out.println("Welcome back to the team, " + user + "!");
+            out.println("Welcome back to the team, " + login + "!");
         } else {
             PrintWriter out = response.getWriter();
             out.println("Either user name or password is wrong!");
