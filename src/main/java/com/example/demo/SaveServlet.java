@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 
 @WebServlet("/saveServlet")
 public class SaveServlet extends HttpServlet {
@@ -16,30 +17,13 @@ public class SaveServlet extends HttpServlet {
 
         response.setContentType("text/plain");
         response.setCharacterEncoding("UTF-8");
-
-        PrintWriter out = response.getWriter();
-
-        String name = request.getParameter("name");
-        String email = request.getParameter("email");
-        String country = request.getParameter("country");
-
-        Employee employee = new Employee();
-
-        employee.setName(name);
-        employee.setEmail(email);
-        employee.setCountry(country);
-
-        //out.println(employee.toString());
-        //out.println(EmployeeRepository.getConnection());
-
-        int status = EmployeeRepository.save(employee);
-        //out.println(status);
-
-        if (status > 0) {
-            out.print("Record saved successfully!");
-        } else {
-            out.println("Sorry! unable to save record");
+        int status = 0;
+        try {
+            status = EmployeeRepository.save(Methods_For_Implementation.getParameterSave(request,"name","email","country"));
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        out.close();
-    }
+     Methods_For_Implementation.status(response,status);
+   }
+
 }
