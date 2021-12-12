@@ -7,10 +7,10 @@ public class AuthenticationFilterCheck {
         public static HashMap<String, Boolean> checkMap = new HashMap<>();
 
         public static void checkMapInit(){
-            checkMap.put("demo/saveServlet", false);
+            checkMap.put("demo/saveServlet", true);
             checkMap.put("demo/viewServlet", true);
-            checkMap.put("demo/deleteServlet", false);
-            checkMap.put("demo/putServlet", false);
+            checkMap.put("demo/deleteServlet", true);
+            checkMap.put("demo/putServlet", true);
             checkMap.put("demo/viewByIDServlet", true);
             checkMap.put("demo/LogoutServlet", true);
             checkMap.put("demo/LoginServlet", true);

@@ -1,12 +1,13 @@
 package com.example.demo;
 
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class EmployeeRepository {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, SQLException {
         getConnection();
 
         Employee employee = new Employee();
@@ -37,17 +38,16 @@ public class EmployeeRepository {
         return connection;
     }
 
-    public static int save(Employee employee) {
+    public static int save(Employee employee) throws SQLException {
         int status = 0;
         try {
-            Connection connection = EmployeeRepository.getConnection();
-            PreparedStatement ps = connection.prepareStatement("insert into users(name,email,country) values (?,?,?)");
+            PreparedStatement ps = Methods_For_Implementation.connectionSql("insert into users(name,email,country) values (?,?,?)");
             ps.setString(1, employee.getName());
             ps.setString(2, employee.getEmail());
             ps.setString(3, employee.getCountry());
 
             status = ps.executeUpdate();
-            connection.close();
+            ps.close();
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -55,20 +55,20 @@ public class EmployeeRepository {
         return status;
     }
 
-    public static int update(Employee employee) {
+    public static int update(Employee employee) throws SQLException {
 
         int status = 0;
 
         try {
-            Connection connection = EmployeeRepository.getConnection();
-            PreparedStatement ps = connection.prepareStatement("update users set name=?,email=?,country=? where id=?");
+            PreparedStatement ps = Methods_For_Implementation.connectionSql("update users set name=?,email=?,country=? where id=?");
+
             ps.setString(1, employee.getName());
             ps.setString(2, employee.getEmail());
             ps.setString(3, employee.getCountry());
             ps.setInt(4, employee.getId());
 
             status = ps.executeUpdate();
-            connection.close();
+            ps.close();
 
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
@@ -76,17 +76,15 @@ public class EmployeeRepository {
         return status;
     }
 
-    public static int delete(int id) {
+    public static int delete(int id) throws SQLException {
 
         int status = 0;
 
         try {
-            Connection connection = EmployeeRepository.getConnection();
-            PreparedStatement ps = connection.prepareStatement("delete from users where id=?");
+            PreparedStatement ps = Methods_For_Implementation.connectionSql("delete from users where id=?");
             ps.setInt(1, id);
             status = ps.executeUpdate();
-
-            connection.close();
+            ps.close();
 
         } catch (SQLException exception) {
             exception.printStackTrace();
@@ -94,22 +92,18 @@ public class EmployeeRepository {
         return status;
     }
 
-    public static Employee getEmployeeById(int id) {
+    public static Employee getEmployeeById(int id) throws SQLException {
 
         Employee employee = new Employee();
 
         try {
-            Connection connection = EmployeeRepository.getConnection();
-            PreparedStatement ps = connection.prepareStatement("select * from users where id=?");
+            PreparedStatement ps = Methods_For_Implementation.connectionSql("select * from users where id=?");
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                employee.setId(rs.getInt(1));
-                employee.setName(rs.getString(2));
-                employee.setEmail(rs.getString(3));
-                employee.setCountry(rs.getString(4));
+                Methods_For_Implementation.columnIndex(rs);
             }
-            connection.close();
+            ps.close();
 
         } catch (SQLException exception) {
             exception.printStackTrace();
@@ -117,27 +111,19 @@ public class EmployeeRepository {
         return employee;
     }
 
-    public static List<Employee> getAllEmployees() {
+    public static List<Employee> getAllEmployees() throws SQLException {
 
         List<Employee> listEmployees = new ArrayList<>();
 
         try {
-            Connection connection = EmployeeRepository.getConnection();
-            PreparedStatement ps = connection.prepareStatement("select * from users");
+            PreparedStatement ps = Methods_For_Implementation.connectionSql("select * from users");
             ResultSet rs = ps.executeQuery();
-
             while (rs.next()) {
 
-                Employee employee = new Employee();
 
-                employee.setId(rs.getInt(1));
-                employee.setName(rs.getString(2));
-                employee.setEmail(rs.getString(3));
-                employee.setCountry(rs.getString(4));
-
-                listEmployees.add(employee);
+                listEmployees.add(Methods_For_Implementation.columnIndex(rs));
             }
-            connection.close();
+            ps.close();
 
         } catch (SQLException e) {
             e.printStackTrace();

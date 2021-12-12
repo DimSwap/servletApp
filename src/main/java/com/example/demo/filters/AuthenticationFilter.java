@@ -28,33 +28,16 @@ public class AuthenticationFilter implements Filter {
         this.context.log("Requested Resource::http://localhost:8080" + uri);
 
         HttpSession session = req.getSession(false);
-        if (session == null) {
-            if (AuthenticationFilterCheck.checkLogin(uri)) {
-                chain.doFilter(request, response);
-            } else {
-                this.context.log("<<< Unauthorized access request");
-                PrintWriter out = res.getWriter();
-                out.println("No access because you have not logged in!!!");
-            }
-        } else if (!AuthenticationFilterCheck.checkMapUri(uri)) {
+
+        if (session == null && !(uri.endsWith("demo/saveServlet") || uri.endsWith("demo/loginServlet") || uri.endsWith("demo/viewServlet"))) {
             this.context.log("<<< Unauthorized access request");
             PrintWriter out = res.getWriter();
-            out.println("You have no rights to do that!!!");
+            out.println("No access!!!");
         } else {
             chain.doFilter(request, response);
         }
-
-//        if (session == null && !(uri.endsWith("demo/saveServlet") || uri.endsWith("demo/loginServlet") || uri.endsWith("demo/viewServlet"))) {
-//            this.context.log("<<< Unauthorized access request");
-//            PrintWriter out = res.getWriter();
-//            out.println("No access!!!");
-//        } else {
-//            chain.doFilter(request, response);
-//        }
-//    }
-
-
     }
+
     public void destroy() {
         //close any resources here
     }
